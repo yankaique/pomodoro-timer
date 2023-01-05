@@ -31,17 +31,46 @@ interface CycleContextType {
 
 export const CyclesContext = createContext({} as CycleContextType)
 
+interface CycleState {
+  cycles: Cycle[]
+  activeCycleId: string | null
+}
+
 export function CyclesContextProvider({
   children,
 }: CyclesContextProvidesProps) {
-  const [cycles, dispatch] = useReducer((state: Cycle[], action: any) => {
-    if (action.type === 'ADD_NEW_CYCLE') {
-      return [...state, action.payload.data]
-    }
+  const [cyclesState, dispatch] = useReducer(
+    (state: CycleState, action: any) => {
+      if (action.type === 'ADD_NEW_CYCLE') {
+        return {
+          ...state,
+          cycles: [...state.cycles, action.payload.data],
+          activeCycleId: action.payload.data.id,
+        }
+      }
 
-    return state
-  }, [])
-  const [activeCycleId, setActiveCycleId] = useState<string | null>(null)
+      if (action.type === 'INTERRUPT_CURRENT_CYCLE') {
+        return {
+          ...state,
+          cycles: state.cycles.map((cycle) => {
+            if (cycle.id === state.activeCycleId) {
+              return { ...cycle, interruptedDate: new Date() }
+            }
+
+            return cycle
+          }),
+          activeCycleId: null,
+        }
+      }
+
+      return state
+    },
+    {
+      cycles: [],
+      activeCycleId: null,
+    },
+  )
+  const { cycles, activeCycleId } = cyclesState
   const [amountSecondsPast, setAmountSecondsPast] = useState(0)
 
   const activeCycle = cycles.find((cycle) => cycle.id === activeCycleId)
@@ -84,9 +113,7 @@ export function CyclesContextProvider({
       },
     })
 
-    // setCycles((state) => [...state, newCicle])
-    // setActiveCycleId(cycleId)
-    // setAmountSecondsPast(0)
+    setAmountSecondsPast(0)
   }
 
   function interruptCurrentCycle() {
@@ -96,17 +123,6 @@ export function CyclesContextProvider({
         data: activeCycleId,
       },
     })
-    // setCycles((state) =>
-    //   state.map((cycle) => {
-    //     if (cycle.id === activeCycleId) {
-    //       return { ...cycle, interruptedDate: new Date() }
-    //     }
-
-    //     return cycle
-    //   }),
-    // )
-
-    setActiveCycleId(null)
   }
 
   return (
