@@ -41,29 +41,40 @@ export function CyclesContextProvider({
 }: CyclesContextProvidesProps) {
   const [cyclesState, dispatch] = useReducer(
     (state: CycleState, action: any) => {
-      if (action.type === 'ADD_NEW_CYCLE') {
-        return {
-          ...state,
-          cycles: [...state.cycles, action.payload.data],
-          activeCycleId: action.payload.data.id,
-        }
+      switch (action.type) {
+        case 'ADD_NEW_CYCLE':
+          return {
+            ...state,
+            cycles: [...state.cycles, action.payload.data],
+            activeCycleId: action.payload.data.id,
+          }
+        case 'INTERRUPT_CURRENT_CYCLE':
+          return {
+            ...state,
+            cycles: state.cycles.map((cycle) => {
+              if (cycle.id === state.activeCycleId) {
+                return { ...cycle, interruptedDate: new Date() }
+              }
+
+              return cycle
+            }),
+            activeCycleId: null,
+          }
+        case 'MARK_CURRENT_CYCLE_IS_FINISHED':
+          return {
+            ...state,
+            cycles: state.cycles.map((cycle) => {
+              if (cycle.id === state.activeCycleId) {
+                return { ...cycle, finishedDate: new Date() }
+              }
+
+              return cycle
+            }),
+            activeCycleId: null,
+          }
+        default:
+          return state
       }
-
-      if (action.type === 'INTERRUPT_CURRENT_CYCLE') {
-        return {
-          ...state,
-          cycles: state.cycles.map((cycle) => {
-            if (cycle.id === state.activeCycleId) {
-              return { ...cycle, interruptedDate: new Date() }
-            }
-
-            return cycle
-          }),
-          activeCycleId: null,
-        }
-      }
-
-      return state
     },
     {
       cycles: [],
@@ -82,14 +93,6 @@ export function CyclesContextProvider({
         data: activeCycleId,
       },
     })
-    // setCycles((state) =>
-    //   state.map((cycle) => {
-    //     if (cycle.id === activeCycleId) {
-    //       return { ...cycle, finishedDate: new Date() }
-    //     }
-    //     return cycle
-    //   }),
-    // )
   }
 
   function getSecondsPassed(seconds: number) {
