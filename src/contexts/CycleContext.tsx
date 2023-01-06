@@ -1,11 +1,20 @@
-import { ReactNode, createContext, useReducer, useState } from 'react'
-import { Cycle, cyclesReducer } from '../reducers/cycles/reducer'
+import {
+  ReactNode,
+  createContext,
+  useEffect,
+  useReducer,
+  useState,
+} from 'react'
+import { Cycle, CycleState, cyclesReducer } from '../reducers/cycles/reducer'
 import {
   ActionType,
   addNewCycleAction,
   interruptCurrentCycleAction,
   markCurrrentCycleIsFinishedAction,
 } from '../reducers/cycles/actions'
+import { differenceInSeconds } from 'date-fns'
+import { version } from '../../package.json'
+import produce from 'immer'
 
 interface CreateCycleData {
   task: string
@@ -32,14 +41,48 @@ export const CyclesContext = createContext({} as CycleContextType)
 export function CyclesContextProvider({
   children,
 }: CyclesContextProvidesProps) {
-  const [cyclesState, dispatch] = useReducer(cyclesReducer, {
-    cycles: [],
-    activeCycleId: null,
-  })
-  const { cycles, activeCycleId } = cyclesState
-  const [amountSecondsPast, setAmountSecondsPast] = useState(0)
+  const [cyclesState, dispatch] = useReducer(
+    cyclesReducer,
+    {
+      cycles: [],
+      activeCycleId: null,
+    },
+    () => {
+      const storedStateAsJSON = localStorage.getItem(
+        `@pomodoro-timer:cycles-state-${version}`,
+      )
 
+      if (storedStateAsJSON) {
+        const cycleStoredState = JSON.parse(storedStateAsJSON) as CycleState
+
+        cycleStoredState.cycles.map((cycle) => {
+          if (typeof cycle.startDate === 'string') {
+            cycle.startDate = new Date(cycle.startDate)
+          }
+
+          return cycle
+        })
+
+        return cycleStoredState
+      }
+
+      return {
+        cycles: [],
+        activeCycleId: null,
+      }
+    },
+  )
+
+  const { cycles, activeCycleId } = cyclesState
   const activeCycle = cycles.find((cycle) => cycle.id === activeCycleId)
+
+  const [amountSecondsPast, setAmountSecondsPast] = useState(() => {
+    if (activeCycle) {
+      return differenceInSeconds(new Date(), activeCycle.startDate)
+    }
+
+    return 0
+  })
 
   function markCurrentCycleAsFinished() {
     dispatch(markCurrrentCycleIsFinishedAction())
@@ -67,6 +110,12 @@ export function CyclesContextProvider({
   function interruptCurrentCycle() {
     dispatch(interruptCurrentCycleAction())
   }
+
+  useEffect(() => {
+    const stateJSON = JSON.stringify(cyclesState)
+
+    localStorage.setItem(`@pomodoro-timer:cycles-state-${version}`, stateJSON)
+  }, [cyclesState])
 
   return (
     <CyclesContext.Provider
