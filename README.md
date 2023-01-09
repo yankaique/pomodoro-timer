@@ -4,6 +4,7 @@
     </h1>
 </div>
 <br />
+
 <h6 align="center">
     🥋 Hard work and Code 
 </h6>
@@ -17,7 +18,7 @@
 </p>
 
 <div align="center">
-<img src="/github/screen-example.png"/>
+<img src="/.github/screen-example.png"/>
 </div>
 
 
@@ -60,6 +61,6 @@ This project is under GNU license. See the [LICENSE](LICENSE.md) file for more d
 <h6>
     Follow me on Linkedin 
     <a href="https://www.linkedin.com/in/yankaique/">
-        <img src="/github/linkedin.png" />
+        <img src="/.github/linkedin.png" />
     </a>
 </h6>
