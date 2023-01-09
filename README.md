@@ -36,12 +36,14 @@
 [zod]("https://github.com/colinhacks/zod")
 [date-fns]("https://date-fns.org/")
 [immer]("https://github.com/immerjs/immer")
+
 <br>
+
 <h3 id="install">Install 📲</h3>
 <hr />
 
-1. clone the repository using `git clone`
-2. Install packages using `npm i` or `yarn`
+1. clone repository `git clone https://github.com/yankaique/pomodoro-timer`
+2. Install packages `npm i` or `yarn`
 3. Run `npm run dev` or `yarn dev`
 <br>
 
