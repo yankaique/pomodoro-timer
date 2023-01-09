@@ -31,14 +31,12 @@
 <h3 id="tecnologies">Tecnologies 🚀</h3>
 <hr />
 
-- [ReactJS]("https://pt-br.reactjs.org/")
-    - [styled-components]("https://reactnavigation.org/")
-    - [zod]("https://github.com/colinhacks/zod")
-    - [date-fns]("https://date-fns.org/")
-    - [immer]("https://github.com/immerjs/immer")
-
+[ReactJS]("https://pt-br.reactjs.org/")
+[styled-components]("https://styled-components.com/")
+[zod]("https://github.com/colinhacks/zod")
+[date-fns]("https://date-fns.org/")
+[immer]("https://github.com/immerjs/immer")
 <br>
-
 <h3 id="install">Install 📲</h3>
 <hr />
 
