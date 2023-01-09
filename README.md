@@ -3,7 +3,6 @@
         Pomodoro Timer
     </h1>
 </div>
-<br />
 
 <h6 align="center">
     🥋 Hard work and Code 
@@ -20,7 +19,7 @@
 <div align="center">
 <img src="/.github/screen-example.png"/>
 </div>
-
+<br />
 
 <h3 id="introduction">Introduction 🏁</h3>
     <hr />
